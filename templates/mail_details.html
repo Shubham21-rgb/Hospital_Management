@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartPark - Monthly Parking Report</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+</head>
+<body style="background-color:#f8f9fa;">
+    <div class="container bg-white shadow-lg p-4 rounded-3 mt-4">
+        <!-- Logo -->
+        <div class="row">
+            <div class="text-center mb-3">
+                <img src="http://localhost:5000/static/smartpark_logo.png" alt="SmartPark Logo" style="width:200px;">
+            </div>
+        </div>
+
+        <!-- Header -->
+        <div class="row text-center">
+            <h1 class="fw-bold text-primary">SmartPark Monthly Report</h1>
+            <p class="text-secondary fs-5">for {{ data['month_name'] }} {{ data['year'] }}</p>
+        </div>
+
+        <!-- Greeting -->
+        <div class="row">
+            <p class="fs-4">Hello <strong>{{ data['username'] }}</strong>,</p>
+            <p class="fs-6">Here’s a summary of your parking activity for this month.</p>
+        </div>
+
+        <!-- Transaction Table -->
+        <div class="row mt-3">
+            <table class="table table-bordered table-striped align-middle">
+                <thead class="table-primary text-center">
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Lot Name</th>
+                        <th scope="col">Spot</th>
+                        <th scope="col">Start Time</th>
+                        <th scope="col">End Time</th>
+                        <th scope="col">Payment Method</th>
+                        <th scope="col">Amount (₹)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% set total = 0 %}
+                    {% for r in data['transactions'] %}
+                    <tr>
+                        <td class="text-center">{{ loop.index }}</td>
+                        <td>{{ r['lot_name'] }}</td>
+                        <td>{{ r['spot_number'] }}</td>
+                        <td>{{ r['start'] }}</td>
+                        <td>{{ r['end'] or 'N/A' }}</td>
+                        <td>{{ r['payment_method'] or 'N/A' }}</td>
+                        <td class="text-end">{{ r['amount'] }}</td>
+                        {% set total = total + r['amount'] %}
+                    </tr>
+                    {% endfor %}
+                    <tr class="table-light">
+                        <td colspan="6" class="text-end fw-bold">Total Spent</td>
+                        <td class="text-end fw-bold">₹{{ total }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Summary -->
+        <div class="row mt-3">
+            <p class="fs-6">
+                <strong>Most Visited Parking Lot:</strong> {{ data['most_used_lot'] or 'N/A' }} <br>
+                <strong>Total Bookings:</strong> {{ data['total_bookings'] }}
+            </p>
+            <p class="fs-6 text-muted">
+                Thank you for choosing SmartPark. We look forward to serving you again next month!
+            </p>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center border-top pt-3 mt-4">
+            <p class="text-secondary small mb-1">
+                SmartPark | © {{ data['year'] }} | All Rights Reserved
+            </p>
+            <p class="small text-muted mb-0">
+                Generated automatically by SmartPark Celery Scheduler
+            </p>
+        </div>
+    </div>
+</body>
+</html>
