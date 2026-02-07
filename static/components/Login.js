@@ -93,7 +93,7 @@ export default{
                     this.$router.push('/dashboard')
                 }
                 else{
-                    this.$router.push('/doc_dashboard')
+                    this.$router.push('/doctor')
                 }
             }
                 

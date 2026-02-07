@@ -5,6 +5,7 @@ import Navbar from './components/Navbar.js'
 import Footer from './components/Footer.js' 
 import dashboard from './components/dashboard.js'
 import admin from './components/admin.js'
+import doctor from './components/doctor.js'
 import payment from './components/payment.js'
 
 const routes=[
@@ -13,10 +14,8 @@ const routes=[
     {path: '/login',component: Login},
     {path:'/register',component: Register},
     {path:'/admin',component:admin},
+    {path:'/doctor',component:doctor},
     {path:'/payment',component:payment}
-
-    
-
 ]
 const router=new VueRouter({
     routes
