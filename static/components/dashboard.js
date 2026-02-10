@@ -6,6 +6,7 @@ export default {
   template: `
 <div class="patient-dashboard">
   <n></n>
+  <div v-if="profile.active === true" class="container py-5">
   <!-- Dashboard Header -->
   <div class="dashboard-header text-center py-5 mb-4">
     <div class="container">
@@ -260,6 +261,12 @@ export default {
         </div>
       </div>
     </div>
+  </div>
+  </div>
+  <div v-else class="container py-5 text-center">
+    <i class="bi bi-x-circle-fill text-danger display-1 mb-4"></i>
+    <h2 class="fw-bold text-danger mb-3">Account Inactive</h2>
+    <p class="text-muted fs-5">Your account is currently inactive. Please contact support for assistance.</p>
   </div>
 </div>
 `,
