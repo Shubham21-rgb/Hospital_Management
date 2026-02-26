@@ -1,4 +1,5 @@
-from flask import current_app as app,jsonify,request,render_template,send_from_directory
+from flask import jsonify,request,render_template,send_from_directory
+from app import app, cache
 from flask_security import auth_required, roles_required,current_user,login_user,roles_accepted
 from application.database import db
 from werkzeug.security import check_password_hash,generate_password_hash
@@ -632,10 +633,16 @@ def admin_create_doctor():
             return jsonify({"message": "Email already registered"}), 400
         
         # Create user account
+        first_email=data.get('email', '')[:4]
+        last_phone=data.get('phone', '')[-4:]
+        print(f"Generated username: {first_email}")
+        print(f"Generated phone: {last_phone}")
+        password=first_email+last_phone
+        print(f"Generated password: {password}")
         new_user = app.security.datastore.create_user(
             username=data['email'].split('@')[0],
             email=data['email'],
-            password=generate_password_hash(data.get('password', 'doctor123')),
+            password=generate_password_hash(data.get('password', password)),
             first_name=data.get('first_name', ''),
             last_name=data.get('last_name', ''),
             phone=data.get('phone', ''),
@@ -1267,6 +1274,7 @@ def doctor_get_patients():
 @roles_required('patient')
 def patient_update_profile():
     data = request.get_json()
+    print("Frontend Data Received : ",data)
     
     try:
         user = current_user
@@ -1284,8 +1292,6 @@ def patient_update_profile():
             user.phone = data['phone']
         if 'address' in data:
             user.address = data['address']
-        if 'date_of_birth' in data:
-            user.date_of_birth = datetime.strptime(data['date_of_birth'], "%Y-%m-%d").date()
         if 'gender' in data:
             user.gender = data['gender']
         
@@ -1312,7 +1318,43 @@ def patient_update_profile():
     except Exception as e:
         db.session.rollback()
         return jsonify({"message": f"Error updating profile: {str(e)}"}), 500
-
+#--Manual Searching----
+@app.route('/api/patient/manual_search', methods=['POST'])
+@auth_required('token')
+@roles_required('patient')
+def patient_manual_search():
+    query = request.get_json()
+    print(f"Search query: {query}")
+    
+    try:
+        depth = query.get('dept', None)
+        print(f"Department ID: {depth}")
+        
+        # Use joins with relationships to retrieve data
+        doctors_query = db.session.query(Doctor).join(Doctor.user).join(Doctor.department).filter(Doctor.is_active == True)
+        
+        if depth:
+            doctors_query = doctors_query.filter(Doctor.department_id == depth)
+        
+        doctors = doctors_query.all()
+        print(f"Found {len(doctors)} doctors matching query")
+        
+        doctors_list = []
+        for doc in doctors:
+            print(f"Doctor: {doc.user.full_name}, Department: {doc.department.name}")
+            doctors_list.append({
+                "id": doc.id,
+                "name": doc.user.full_name,
+                "email": doc.user.email,
+                "department": doc.department.name,
+                "qualification": doc.qualification,
+                "is_available": doc.is_available
+            })
+        
+        return jsonify({"doctors": doctors_list}), 200
+        
+    except Exception as e:
+        return jsonify({"message": f"Error searching doctors: {str(e)}"}), 500
 
 ### --- Patient: Get Profile ---
 @app.route('/api/patient/profile', methods=['GET'])
@@ -1599,3 +1641,13 @@ def patient_reschedule_appointment():
         return jsonify({"message": f"Error rescheduling appointment: {str(e)}"}), 500
 
 
+#-------------------------------------- Demo of redis apply where you feel neccesary -----------------
+
+
+@app.route('/api/demo/cache', methods=['GET'])
+@cache.cached(timeout=30)  
+def demo_cache():
+    import time
+    time.sleep(2) 
+    print("Generating new response at:", datetime.utcnow())
+    return jsonify({"message": "This response is cached for 30 seconds!"}), 200

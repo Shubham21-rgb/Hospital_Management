@@ -6,7 +6,6 @@ import Footer from './components/Footer.js'
 import dashboard from './components/dashboard.js'
 import admin from './components/admin.js'
 import doctor from './components/doctor.js'
-import payment from './components/payment.js'
 
 const routes=[
     {path: '/',component: Home},
@@ -14,8 +13,7 @@ const routes=[
     {path: '/login',component: Login},
     {path:'/register',component: Register},
     {path:'/admin',component:admin},
-    {path:'/doctor',component:doctor},
-    {path:'/payment',component:payment}
+    {path:'/doctor',component:doctor}
 ]
 const router=new VueRouter({
     routes
@@ -28,6 +26,7 @@ const app = new Vue({
     <div class="container">Welcome To Our Portal from Developer
     <router-view></router-view>
     <foot></foot>
+    <button @click="demoCache">Cache-Demo</button>
     </div>
     `,
     data:{
@@ -36,5 +35,14 @@ const app = new Vue({
     components:{
         "nav-bar":Navbar,
         "foot":Footer
+    },
+    methods:{
+        demoCache(){
+            fetch('/api/demo/cache')
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+            })
+        }
     }
 })

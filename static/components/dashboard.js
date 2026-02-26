@@ -24,6 +24,8 @@ export default {
         <div>
           <h4 class="mb-0 fw-semibold">Welcome {{ profile.first_name }} {{ profile.last_name }} !</h4>
           <p class="text-muted mb-0">{{ profile.email }}</p>
+          <p>{{profile.username}} </p>
+          <p>{{profile.gender}}</p>
         </div>
       </div>
       <button class="btn btn-outline-primary" @click="showProfileModal = true">
@@ -48,6 +50,12 @@ export default {
       </div>
       <div class="row mb-4">
         <div class="col-md-6 mb-3">
+        <input v-model="search.Query" placeholder="Search by Name">
+        <select v-model="search.dept" class="form-select">
+            <option value="">All Departments</option>
+            <option v-for="d in departments" :key="d.id" :value="d.id">{{ d.name }}</option>
+          </select>
+        <button @click="search_manual">Search</button>
           <select v-model="searchDept" class="form-select" @change="searchDoctors">
             <option value="">All Departments</option>
             <option v-for="d in departments" :key="d.id" :value="d.id">{{ d.name }}</option>
@@ -280,6 +288,10 @@ export default {
       message: "",
       searchDept: "",
       searchAvailability: "",
+      search:{
+        Query:"",
+        dept:""
+      },
       showBookingModal: false,
       showRescheduleModal: false,
       showProfileModal: false,
@@ -304,8 +316,22 @@ export default {
       .then(data => {
         if (data.id) {
           this.profile = data;
+          console.log(this.profile);
         }
       });
+    },
+    search_manual(){
+      fetch('/api/patient/manual_search',{
+        method:'POST',
+        headers: { "Content-Type": "application/json", "Authentication-Token": localStorage.getItem('auth_token') },
+        body: JSON.stringify(this.search)
+      })
+      .then(r => r.json())
+      .then(data => {
+        this.doctors = data.doctors || [];
+        console.log(this.doctors);
+      })
+
     },
     updateProfile() {
       fetch('/api/patient/update_profile', {

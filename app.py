@@ -9,20 +9,20 @@ from werkzeug.security import generate_password_hash
 #from celery.schedules import crontab
 #here we will use the hash password for encrypting the password
 from flask_security import hash_password
-#from flask_caching import Cache
+from flask_caching import Cache
 
 # Redis cache setup
-'''cache = Cache(config={
+cache = Cache(config={
     "CACHE_TYPE": "RedisCache",
     "CACHE_DEFAULT_TIMEOUT": 60,  # 1 minute default
     "CACHE_REDIS_URL": "redis://localhost:6379/0"
-})'''
+})
 def create_app():
     app=Flask(__name__)
     app.config.from_object(LocalDevelopmentConfig)
     db.init_app(app)
     #api.init_app(app)
-    #cache.init_app(app)
+    cache.init_app(app)
     datastore=SQLAlchemyUserDatastore(db,User,Role)
     app.security=Security(app,datastore)
     app.app_context().push()
@@ -51,6 +51,8 @@ with app.app_context():
                                            
     db.session.commit()
 from application.routes import *
+
+
 
 '''@celery.on_after_finalize.connect 
 def setup_periodic_tasks(sender, **kwargs):
