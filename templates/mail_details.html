@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SmartPark - Monthly Parking Report</title>
+    <title>Hospital - Monthly Doctor Report</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 </head>
 <body style="background-color:#f8f9fa;">
@@ -11,20 +11,19 @@
         <!-- Logo -->
         <div class="row">
             <div class="text-center mb-3">
-                <img src="http://localhost:5000/static/smartpark_logo.png" alt="SmartPark Logo" style="width:200px;">
+                <img src="http://localhost:5000/static/smartpark_logo.png" alt="Hospital Logo" style="width:200px;">
             </div>
         </div>
 
         <!-- Header -->
         <div class="row text-center">
-            <h1 class="fw-bold text-primary">SmartPark Monthly Report</h1>
-            <p class="text-secondary fs-5">for {{ data['month_name'] }} {{ data['year'] }}</p>
+            <h1 class="fw-bold text-primary">Doctors Monthly Report</h1>
         </div>
 
         <!-- Greeting -->
         <div class="row">
-            <p class="fs-4">Hello <strong>{{ data['username'] }}</strong>,</p>
-            <p class="fs-6">Here’s a summary of your parking activity for this month.</p>
+            <p class="fs-4">Hello <strong>{{ data.get('Doctor Name', 'Doctor') }}</strong>,</p>
+            <p class="fs-6">Here is a summary of your patients' appointments and treatments for this month.</p>
         </div>
 
         <!-- Transaction Table -->
@@ -33,54 +32,43 @@
                 <thead class="table-primary text-center">
                     <tr>
                         <th scope="col">#</th>
-                        <th scope="col">Lot Name</th>
-                        <th scope="col">Spot</th>
-                        <th scope="col">Start Time</th>
-                        <th scope="col">End Time</th>
-                        <th scope="col">Payment Method</th>
-                        <th scope="col">Amount (₹)</th>
+                        <th scope="col">Appointment Date</th>
+                        <th scope="col">Appointment Time</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Reason for Visit</th>
+                        <th scope="col">Symptoms</th>
+                        <th scope="col">Diagnosis</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% set total = 0 %}
-                    {% for r in data['transactions'] %}
+                    {% set appointments = data.get('appointments', []) %}
+                    {% for r in appointments %}
                     <tr>
                         <td class="text-center">{{ loop.index }}</td>
-                        <td>{{ r['lot_name'] }}</td>
-                        <td>{{ r['spot_number'] }}</td>
-                        <td>{{ r['start'] }}</td>
-                        <td>{{ r['end'] or 'N/A' }}</td>
-                        <td>{{ r['payment_method'] or 'N/A' }}</td>
-                        <td class="text-end">{{ r['amount'] }}</td>
-                        {% set total = total + r['amount'] %}
+                        <td>{{ r.get('Appointment Date', '-') }}</td>
+                        <td>{{ r.get('Appointment Time', '-') }}</td>
+                        <td>{{ r.get('Status', '-') }}</td>
+                        <td>{{ r.get('Reason for Visit', '-') }}</td>
+                        <td>{{ r.get('Symptoms', '-') }}</td>
+                        <td>{{ r.get('Diagnosis', '-') }}</td>
                     </tr>
                     {% endfor %}
-                    <tr class="table-light">
-                        <td colspan="6" class="text-end fw-bold">Total Spent</td>
-                        <td class="text-end fw-bold">₹{{ total }}</td>
+                    {% if appointments|length == 0 %}
+                    <tr>
+                        <td colspan="7" class="text-center text-muted">No appointments found for this month.</td>
                     </tr>
+                    {% endif %}
                 </tbody>
             </table>
-        </div>
-
-        <!-- Summary -->
-        <div class="row mt-3">
-            <p class="fs-6">
-                <strong>Most Visited Parking Lot:</strong> {{ data['most_used_lot'] or 'N/A' }} <br>
-                <strong>Total Bookings:</strong> {{ data['total_bookings'] }}
-            </p>
-            <p class="fs-6 text-muted">
-                Thank you for choosing SmartPark. We look forward to serving you again next month!
-            </p>
         </div>
 
         <!-- Footer -->
         <div class="text-center border-top pt-3 mt-4">
             <p class="text-secondary small mb-1">
-                SmartPark | © {{ data['year'] }} | All Rights Reserved
+                Hospital Services | © Shubham| All Rights Reserved
             </p>
             <p class="small text-muted mb-0">
-                Generated automatically by SmartPark Celery Scheduler
+                Generated digitally by Hospital Management System.
             </p>
         </div>
     </div>

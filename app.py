@@ -5,8 +5,8 @@ from application.config import LocalDevelopmentConfig
 from flask_security import Security,SQLAlchemyUserDatastore
 from werkzeug.security import generate_password_hash
 #from application.resources import api
-#from application.celery_init import celery_init_app
-#from celery.schedules import crontab
+from application.celery_init import celery_init_app
+from celery.schedules import crontab
 #here we will use the hash password for encrypting the password
 from flask_security import hash_password
 from flask_caching import Cache
@@ -28,8 +28,8 @@ def create_app():
     app.app_context().push()
     return app
 app=create_app()
-#celery=celery_init_app(app)
-#celery.autodiscover_tasks()
+celery=celery_init_app(app)
+celery.autodiscover_tasks()
 
 with app.app_context():
     db.create_all()
@@ -54,13 +54,13 @@ from application.routes import *
 
 
 
-'''@celery.on_after_finalize.connect 
+@celery.on_after_finalize.connect 
 def setup_periodic_tasks(sender, **kwargs):
     sender.add_periodic_task(
-        crontab(minute = '*/5'),
+        crontab(minute = '*/1'),
         monthly_report.s(),
-    )'''
+    )
 if __name__=="__main__":
-    app.run()
+    app.run(host="0.0.0.0", port=5000, debug=True)
 
 #pip3 install --upgrade setuptools

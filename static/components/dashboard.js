@@ -15,6 +15,9 @@ export default {
       <p class="text-muted fs-5">Manage your health appointments and consultations</p>
     </div>
   </div>
+  <button class="btn btn-outline-primary" @click="csvd">
+        <i class="bi bi-pencil me-2"></i>Download Report
+      </button>
 
   <!-- User Profile Section -->
   <div class="user-details bg-light py-3 mb-4">
@@ -437,6 +440,16 @@ export default {
         this.message = data.message;
         this.fetchAppointments();
       });
-    }
+    },
+    csvd(){
+            fetch('/api/patient/download_report',{
+                method: 'POST',
+                headers: { "Content-Type": "application/json", "Authentication-Token": localStorage.getItem('auth_token') },
+            })
+            .then(response => response.json())
+            .then(data=>{
+                window.location.href = `/api/csv_result/${data.task_id}`
+            })
+        }
   }
 }

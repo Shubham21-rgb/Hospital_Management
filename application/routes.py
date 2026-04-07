@@ -6,7 +6,7 @@ from werkzeug.security import check_password_hash,generate_password_hash
 #from .resources import roles_list
 from .models import *
 from celery.result import AsyncResult
-#from .task import csv_report,monthly_report,delivery_report
+from .task import csv_report,monthly_report,delivery_report
 from sqlalchemy import cast,Float
 import matplotlib
 matplotlib.use('Agg')
@@ -1651,3 +1651,34 @@ def demo_cache():
     time.sleep(2) 
     print("Generating new response at:", datetime.utcnow())
     return jsonify({"message": "This response is cached for 30 seconds!"}), 200
+
+
+
+#----------------------------Celery csv task-----------------------------------
+@app.route('/api/patient/download_report', methods=['POST'])
+@auth_required('token')
+@roles_required('patient')
+def download_report():
+    try:
+        patient = Patient.query.filter_by(user_id=current_user.id).first()
+        if not patient:
+            return jsonify({"message": "Patient profile not found"}), 404
+        
+        task = csv_report.delay(patient.id)
+        return jsonify({"message": "Report generation started", "task_id": task.id}), 202
+        
+    except Exception as e:
+        return jsonify({"message": f"Error starting report generation: {str(e)}"}), 500
+
+@app.route('/api/csv_result/<id>')
+def csv_result_new(id):
+    result = AsyncResult(id)
+    return send_from_directory('static', result.result)
+
+@app.route('/api/mail')
+def send_reports():
+    doctors = Doctor.query.filter_by(user_id=current_user.id).first()
+    res = monthly_report.delay(doctors.id)
+    return {
+        "result": res.result
+    }
