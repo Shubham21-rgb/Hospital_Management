@@ -9,11 +9,11 @@ export default {
 <n></n>
   
   <!-- Dashboard Header -->
-  <div class="dashboard-header text-center py-5 mb-4 bg-gradient" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+  <div class="dashboard-header text-center py-5 mb-4 bg-gradient" style="background: linear-gradient(135deg, #0d34e0 0%, #764ba2 100%);">
     <div class="container">
       <i class="bi bi-shield-check text-white display-3 mb-3"></i>
-      <h1 class="fw-bold text-white mb-2">Admin Dashboard</h1>
-      <p class="text-white fs-5">Hospital Management System</p>
+      <h1 class="fw-bold text-black mb-2">Admin Dashboard</h1>
+      <p class="text-blue fs-5">Hospital Management System</p>
     </div>
   </div>
 

@@ -7,6 +7,7 @@ import dashboard from './components/dashboard.js'
 import admin from './components/admin.js'
 import doctor from './components/doctor.js'
 
+
 const routes=[
     {path: '/',component: Home},
     {path:'/dashboard',component:dashboard},
@@ -23,7 +24,7 @@ const app = new Vue({
     el:"#app",
     router,
     template:`
-    <div class="container">Welcome To Our Portal from Developer
+    <div class="container">Welcome To Our Portal from HOSPITAL
     <router-view></router-view>
     <foot></foot>
     <button @click="demoCache">Cache-Demo</button>

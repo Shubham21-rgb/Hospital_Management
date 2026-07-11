@@ -4,36 +4,39 @@ export default{
         'n':Navbar,
     },
     template:`
-    <div class="container-fluid bg-light min-vh-100 d-flex flex-column justify-content-center align-items-center">
+    <div class="home-container">
   <!-- Header Section -->
-  <div class="text-center mb-5">
-    <h1 class="display-4 fw-bold text-primary">Hospital Management System</h1>
-    <p class="lead text-secondary">
+  <div class="home-header">
+    <h1>Hospital Management System</h1>
+    <p>
         Your one-stop solution for managing hospital appointments, patient records, and more.
     </p>
   </div>
 
   <!-- Image Section -->
-  <div class="card shadow-lg border-0" style="max-width: 650px;">
-    <img src="static/pic1.png" class="card-img-top rounded-top" alt="Parking Illustration">
+  <div class="home-card">
+    <img src="static/pic1.png" alt="Hospital Illustration">
 
-    <div class="card-body text-center">
-      <h5 class="card-title mb-3">WE CARE WE REVIVE LIFE WITH Hospital Management</h5>
-      <p class="card-text text-muted">
+    <div class="home-card-body">
+      <h5 class="home-card-title">
+        WE CARE
+        <span>WE REVIVE LIFE WITH Hospital Management</span>
+      </h5>
+      <p class="home-card-text">
         Manage your hospital appointments, patient records, and more with ease.
       </p>
 
       <!-- Buttons -->
-      <div class="d-flex justify-content-center gap-3 mt-4">
-        <router-link class="btn btn-primary px-4" to="/login">Login</router-link>
-        <router-link class="btn btn-outline-primary px-4" to="/register">Register as User</router-link>
+      <div class="home-button-group">
+        <router-link class="home-btn home-btn-primary" to="/login">Login</router-link>
+        <router-link class="home-btn home-btn-outline" to="/register">Register as User</router-link>
       </div>
     </div>
   </div>
 
   <!-- Footer -->
-  <footer class="text-center mt-5 text-muted small">
-    © 2026 Hospital Management System. All rights reserved.-ShubhamTA
+  <footer class="home-footer">
+    © 2026 Hospital Management System. All rights reserved. - ShubhamTA
   </footer>
 </div>
 `

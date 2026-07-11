@@ -20,7 +20,7 @@ export default{
       <div class="mb-3">
         <label for="email" class="form-label fw-semibold">Email Address</label>
         <input
-          type="text"
+          type="email"
           id="email"
           class="form-control"
           placeholder="Enter your email"
